@@ -10,7 +10,7 @@ class DeviceController{
             let {name,price,brandId, typeId,info} = req.body
             const {img} = req.files
             let fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
+            img.mv(path.resolve(__dirname, "static", fileName))
             const device = await Device.create({name, price, brandId, typeId, img: fileName})
             if(info){
                 info = JSON.parse(info)
@@ -35,7 +35,7 @@ class DeviceController{
             try{
                 const {img} = req.files
                 let fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                img.mv(path.resolve(__dirname, "static", fileName))
                 const device = await Device.update(
                     {name, price, brandId, typeId, rating, img: fileName},
                     { where: {id} }
