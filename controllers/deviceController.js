@@ -20,7 +20,7 @@ class DeviceController{
                 api_secret: process.env.SECRET_PHOTO_KEY 
             });
             // Upload an image
-            const uploadResult = await cloudinary.uploader
+            let uploadResult = await cloudinary.uploader
             .upload(
                 my_path, {
                     public_id: fileName,
@@ -66,7 +66,7 @@ class DeviceController{
                     api_secret: process.env.SECRET_PHOTO_KEY 
                 });
                 // Upload an image
-                const uploadResult = await cloudinary.uploader
+                let uploadResult = await cloudinary.uploader
                 .upload(
                     my_path, {
                         public_id: fileName,
