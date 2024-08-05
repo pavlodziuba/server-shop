@@ -30,10 +30,7 @@ class DeviceController{
                 console.log(error);
             });
 
-            const device = await Device.create(
-                {name, price, brandId, typeId, rating, img: uploadResult},
-                { where: {id} }
-              )
+            const device = await Device.create({name, price, brandId, typeId, img: uploadResult})
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
