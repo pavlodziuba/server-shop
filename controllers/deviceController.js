@@ -3,15 +3,32 @@ const path = require('path');
 const {Device, DeviceInfo} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const Sequelize = require('sequelize')
+import { v2 as cloudinary } from 'cloudinary';
+
 const Op = Sequelize.Op
+
 class DeviceController{
     async create(req,res, next){
+        cloudinary.config({ 
+            cloud_name: 'df5q25ln6', 
+            api_key: '266328853326644', 
+            api_secret: process.env.SECRET_PHOTO_KEY
+        });
         try{
             let {name,price,brandId, typeId,info} = req.body
-            const {img} = req.files
             let fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            const device = await Device.create({name, price, brandId, typeId, img: fileName})
+            // Upload an image
+            const uploadResult = await cloudinary.uploader
+            .upload(
+                fileName, {
+                    public_id: 'photo',
+                }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+
+            const device = await Device.create({name, price, brandId, typeId, img: uploadResult})
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
@@ -29,15 +46,30 @@ class DeviceController{
         }
     }
     async update(req,res, next){
+        cloudinary.config({ 
+            cloud_name: 'df5q25ln6', 
+            api_key: '266328853326644', 
+            api_secret: process.env.SECRET_PHOTO_KEY
+        });
         try{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
-                const {img} = req.files
                 let fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+
+                // Upload an image
+                const uploadResult = await cloudinary.uploader
+                .upload(
+                    fileName, {
+                        public_id: 'photo',
+                    }
+                )
+                .catch((error) => {
+                    console.log(error);
+                });
+
                 const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: fileName},
+                    {name, price, brandId, typeId, rating, img: uploadResult},
                     { where: {id} }
                   )
                 if(info){
