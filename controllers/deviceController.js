@@ -3,37 +3,15 @@ const path = require('path');
 const {Device, DeviceInfo} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const Sequelize = require('sequelize')
-const cloudinary  = require('cloudinary');
-
 const Op = Sequelize.Op
-
 class DeviceController{
     async create(req,res, next){
-
-        cloudinary.config({ 
-            cloud_name: 'df5q25ln6', 
-            api_key: '266328853326644', 
-            api_secret: process.env.SECRET_PHOTO_KEY
-        });
-
         try{
             let {name,price,brandId, typeId,info} = req.body
-            let fileName = uuid.v4() + ".jpg"
             const {img} = req.files
+            let fileName = uuid.v4() + ".jpg"
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            // Upload an image
-            const uploadResult = await cloudinary.uploader
-            .upload(
-                'https://server-shop-0otk.onrender.com/' + fileName, {
-                    public_id: fileName,
-                }
-            )
-            .catch((error) => {
-                console.log(error);
-            });
-            console.log(uploadResult);
-
-            const device = await Device.create({name, price, brandId, typeId, img: uploadResult})
+            const device = await Device.create({name, price, brandId, typeId, img: fileName})
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
@@ -51,31 +29,15 @@ class DeviceController{
         }
     }
     async update(req,res, next){
-        cloudinary.config({ 
-            cloud_name: 'df5q25ln6', 
-            api_key: '266328853326644', 
-            api_secret: process.env.SECRET_PHOTO_KEY
-        });
         try{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
-                let fileName = uuid.v4() + ".jpg"
                 const {img} = req.files
+                let fileName = uuid.v4() + ".jpg"
                 img.mv(path.resolve(__dirname, '..', 'static', fileName))
-                // Upload an image
-                const uploadResult = await cloudinary.uploader
-                .upload(
-                    'https://server-shop-0otk.onrender.com/' + fileName, {
-                        public_id: fileName,
-                    }
-                )
-                .catch((error) => {
-                    console.log(error);
-                });
-                console.log(uploadResult);
                 const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: uploadResult},
+                    {name, price, brandId, typeId, rating, img: fileName},
                     { where: {id} }
                   )
                 if(info){
