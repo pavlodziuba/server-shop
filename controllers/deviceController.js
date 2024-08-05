@@ -23,7 +23,7 @@ class DeviceController{
             const uploadResult = await cloudinary.uploader
             .upload(
                 my_path, {
-                    public_id: 'photo',
+                    public_id: fileName,
                 }
             )
             .catch((error) => {
@@ -69,7 +69,7 @@ class DeviceController{
                 const uploadResult = await cloudinary.uploader
                 .upload(
                     my_path, {
-                        public_id: 'photo',
+                        public_id: fileName,
                     }
                 )
                 .catch((error) => {
