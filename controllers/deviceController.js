@@ -27,7 +27,7 @@ class DeviceController{
             .catch((error) => {
                 console.log(error);
             });
-
+            console.log(uploadResult);
             const device = await Device.create({name, price, brandId, typeId, img: uploadResult})
             if(info){
                 info = JSON.parse(info)
