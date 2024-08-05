@@ -34,6 +34,8 @@ class DeviceController{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
+                const {img} = req.files
+                const filePath = img.tempFilePath;
                 // Configuration
                 cloudinary.config({ 
                     cloud_name: 'df5q25ln6', 
@@ -43,20 +45,16 @@ class DeviceController{
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
-                    'C:/Users/pasha/Desktop/photo/iphone_14_black.jpg', {
-                        public_id: 'shoes',
+                    filePath, {
+                        public_id: 'photo',
                     }
                 )
                 .catch((error) => {
                     console.log(error);
                 });
-                console.log(uploadResult)
-                const {img} = req.files
-                let fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
                 const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: fileName},
+                    {name, price, brandId, typeId, rating, img: uploadResult},
                     { where: {id} }
                   )
                 if(info){
