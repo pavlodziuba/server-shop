@@ -24,7 +24,7 @@ class DeviceController{
             // Upload an image
             const uploadResult = await cloudinary.uploader
             .upload(
-                fileName, {
+                'https://server-shop-0otk.onrender.com/' + fileName, {
                     public_id: fileName,
                 }
             )
@@ -66,7 +66,7 @@ class DeviceController{
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
-                    fileName, {
+                    'https://server-shop-0otk.onrender.com/' + fileName, {
                         public_id: fileName,
                     }
                 )
