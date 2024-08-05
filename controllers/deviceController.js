@@ -42,22 +42,21 @@ class DeviceController{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
-                const {img} = req.files[0]
+                const {img} = req.files
                 let fileName = uuid.v4() + ".jpg"
-        
+                
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
-                    img, {
+                    req.files[0], {
                         public_id: fileName,
                     }
                 )
                 .catch((error) => {
                     console.log(error);
                 });
-                fileName = uploadResult
                 const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: fileName},
+                    {name, price, brandId, typeId, rating, img: uploadResult},
                     { where: {id} }
                   )
                 if(info){
