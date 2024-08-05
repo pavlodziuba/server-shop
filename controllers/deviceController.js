@@ -30,7 +30,7 @@ class DeviceController{
                 console.log(error);
             });
 
-            const device = await Device.update(
+            const device = await Device.create(
                 {name, price, brandId, typeId, rating, img: uploadResult},
                 { where: {id} }
               )
