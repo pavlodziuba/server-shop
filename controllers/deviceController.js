@@ -9,11 +9,13 @@ const Op = Sequelize.Op
 
 class DeviceController{
     async create(req,res, next){
+
         cloudinary.config({ 
             cloud_name: 'df5q25ln6', 
             api_key: '266328853326644', 
             api_secret: process.env.SECRET_PHOTO_KEY
         });
+
         try{
             let {name,price,brandId, typeId,info} = req.body
             let fileName = uuid.v4() + ".jpg"
@@ -23,13 +25,14 @@ class DeviceController{
             const uploadResult = await cloudinary.uploader
             .upload(
                 fileName, {
-                    public_id: 'photo',
+                    public_id: fileName,
                 }
             )
             .catch((error) => {
                 console.log(error);
             });
             console.log(uploadResult);
+
             const device = await Device.create({name, price, brandId, typeId, img: uploadResult})
             if(info){
                 info = JSON.parse(info)
@@ -64,13 +67,13 @@ class DeviceController{
                 const uploadResult = await cloudinary.uploader
                 .upload(
                     fileName, {
-                        public_id: 'photo',
+                        public_id: fileName,
                     }
                 )
                 .catch((error) => {
                     console.log(error);
                 });
-
+                console.log(uploadResult);
                 const device = await Device.update(
                     {name, price, brandId, typeId, rating, img: uploadResult},
                     { where: {id} }
