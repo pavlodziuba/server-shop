@@ -20,7 +20,7 @@ class DeviceController{
                 api_secret: process.env.SECRET_PHOTO_KEY 
             });
             // Upload an image
-            let uploadResult = await cloudinary.uploader
+            fileName  = await cloudinary.uploader
             .upload(
                 my_path, {
                     public_id: fileName,
@@ -30,7 +30,7 @@ class DeviceController{
                 console.log(error);
             });
 
-            const device = await Device.create({name, price, brandId, typeId, img: uploadResult})
+            const device = await Device.create({name, price, brandId, typeId, img: fileName })
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
@@ -63,7 +63,7 @@ class DeviceController{
                     api_secret: process.env.SECRET_PHOTO_KEY 
                 });
                 // Upload an image
-                let uploadResult = await cloudinary.uploader
+                fileName  = await cloudinary.uploader
                 .upload(
                     my_path, {
                         public_id: fileName,
@@ -74,7 +74,7 @@ class DeviceController{
                 });
 
                 const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: uploadResult},
+                    {name, price, brandId, typeId, rating, img: fileName },
                     { where: {id} }
                   )
                 if(info){
