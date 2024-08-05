@@ -3,7 +3,7 @@ const path = require('path');
 const {Device, DeviceInfo} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const Sequelize = require('sequelize')
-import { v2 as cloudinary } from 'cloudinary';
+const cloudinary  = require('cloudinary');
 
 const Op = Sequelize.Op
 
