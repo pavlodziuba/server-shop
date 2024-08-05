@@ -5,29 +5,14 @@ const ApiError = require('../error/ApiError');
 const Sequelize = require('sequelize')
 const cloudinary = require('cloudinary').v2;
 const Op = Sequelize.Op
-
 class DeviceController{
-    
     async create(req,res, next){
         try{
             let {name,price,brandId, typeId,info} = req.body
+            const {img} = req.files
             let fileName = uuid.v4() + ".jpg"
-            console.log(path.resolve(__dirname, '..', 'static', fileName))
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
-                // Upload an image
-                const uploadResult = await cloudinary.uploader
-                .upload(
-                    path.resolve(__dirname, '..', 'static', fileName), {
-                        public_id: fileName,
-                    }
-                )
-                .catch((error) => {
-                    console.log(error);
-                });
-                const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: uploadResult},
-                    { where: {id} }
-                  )
+            const device = await Device.create({name, price, brandId, typeId, img: fileName})
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
@@ -45,31 +30,33 @@ class DeviceController{
         }
     }
     async update(req,res, next){
-        // Configuration
-        cloudinary.config({ 
-            cloud_name: 'df5q25ln6', 
-            api_key: '266328853326644', 
-            api_secret: process.env.SECRET_PHOTO_KEY
-        });
         try{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
-                console.log(path.resolve(__dirname, '..', 'static', fileName))
-                let fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                // Configuration
+                cloudinary.config({ 
+                    cloud_name: 'df5q25ln6', 
+                    api_key: '266328853326644', 
+                    api_secret: process.env.SECRET_PHOTO_KEY 
+                });
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
-                    path.resolve(__dirname, '..', 'static', fileName), {
-                        public_id: fileName,
+                    'C:/Users/pasha/Desktop/photo/iphone_14_black.jpg', {
+                        public_id: 'shoes',
                     }
                 )
                 .catch((error) => {
                     console.log(error);
                 });
+                console.log(uploadResult)
+                const {img} = req.files
+                let fileName = uuid.v4() + ".jpg"
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+
                 const device = await Device.update(
-                    {name, price, brandId, typeId, rating, img: uploadResult},
+                    {name, price, brandId, typeId, rating, img: fileName},
                     { where: {id} }
                   )
                 if(info){
