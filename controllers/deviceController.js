@@ -11,8 +11,29 @@ class DeviceController{
             let {name,price,brandId, typeId,info} = req.body
             const {img} = req.files
             let fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            const device = await Device.create({name, price, brandId, typeId, img: fileName})
+            const my_path = path.resolve(__dirname, '..', 'static', fileName)
+            img.mv(my_path)
+            // Configuration
+            cloudinary.config({ 
+                cloud_name: 'df5q25ln6', 
+                api_key: '266328853326644', 
+                api_secret: process.env.SECRET_PHOTO_KEY 
+            });
+            // Upload an image
+            const uploadResult = await cloudinary.uploader
+            .upload(
+                my_path, {
+                    public_id: 'photo',
+                }
+            )
+            .catch((error) => {
+                console.log(error);
+            });
+
+            const device = await Device.update(
+                {name, price, brandId, typeId, rating, img: uploadResult},
+                { where: {id} }
+              )
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
@@ -35,7 +56,9 @@ class DeviceController{
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
                 const {img} = req.files
-                const filePath = img.tempFilePath;
+                let fileName = uuid.v4() + ".jpg"
+                const my_path = path.resolve(__dirname, '..', 'static', fileName)
+                img.mv(my_path)
                 // Configuration
                 cloudinary.config({ 
                     cloud_name: 'df5q25ln6', 
@@ -45,7 +68,7 @@ class DeviceController{
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
-                    filePath, {
+                    my_path, {
                         public_id: 'photo',
                     }
                 )
