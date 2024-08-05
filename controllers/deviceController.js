@@ -11,10 +11,22 @@ class DeviceController{
     async create(req,res, next){
         try{
             let {name,price,brandId, typeId,info} = req.body
-            const {img} = req.files
             let fileName = uuid.v4() + ".jpg"
             img.mv(path.resolve(__dirname, '..', 'static', fileName))
-            const device = await Device.create({name, price, brandId, typeId, img: fileName})
+                // Upload an image
+                const uploadResult = await cloudinary.uploader
+                .upload(
+                    path.resolve(__dirname, '..', 'static', fileName), {
+                        public_id: fileName,
+                    }
+                )
+                .catch((error) => {
+                    console.log(error);
+                });
+                const device = await Device.update(
+                    {name, price, brandId, typeId, rating, img: uploadResult},
+                    { where: {id} }
+                  )
             if(info){
                 info = JSON.parse(info)
                 info.forEach(i => 
@@ -42,20 +54,18 @@ class DeviceController{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
-                const {img} = req.files
                 let fileName = uuid.v4() + ".jpg"
-                console.log(req.files)
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
-                    req.files[0], {
+                    path.resolve(__dirname, '..', 'static', fileName), {
                         public_id: fileName,
                     }
                 )
                 .catch((error) => {
                     console.log(error);
                 });
-                console.log(uploadResult)
                 const device = await Device.update(
                     {name, price, brandId, typeId, rating, img: uploadResult},
                     { where: {id} }
