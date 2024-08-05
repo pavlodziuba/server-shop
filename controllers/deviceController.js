@@ -3,8 +3,11 @@ const path = require('path');
 const {Device, DeviceInfo} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const Sequelize = require('sequelize')
+const cloudinary = require('cloudinary').v2;
 const Op = Sequelize.Op
+
 class DeviceController{
+    
     async create(req,res, next){
         try{
             let {name,price,brandId, typeId,info} = req.body
@@ -29,13 +32,30 @@ class DeviceController{
         }
     }
     async update(req,res, next){
+        // Configuration
+        cloudinary.config({ 
+            cloud_name: 'df5q25ln6', 
+            api_key: '266328853326644', 
+            api_secret: process.env.SECRET_PHOTO_KEY
+        });
         try{
             const {id} = req.params
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
                 const {img} = req.files
                 let fileName = uuid.v4() + ".jpg"
-                img.mv(path.resolve(__dirname, '..', 'static', fileName))
+                
+                // Upload an image
+                const uploadResult = await cloudinary.uploader
+                .upload(
+                    fileName, {
+                        public_id: fileName,
+                    }
+                )
+                .catch((error) => {
+                    console.log(error);
+                });
+                fileName = uploadResult
                 const device = await Device.update(
                     {name, price, brandId, typeId, rating, img: fileName},
                     { where: {id} }
