@@ -17,6 +17,8 @@ class DeviceController{
         try{
             let {name,price,brandId, typeId,info} = req.body
             let fileName = uuid.v4() + ".jpg"
+            const {img} = req.files
+            img.mv(path.resolve(__dirname, '..', 'static', fileName))
             // Upload an image
             const uploadResult = await cloudinary.uploader
             .upload(
@@ -56,7 +58,8 @@ class DeviceController{
             let {name,price,brandId, typeId,info,rating} = req.body
             try{
                 let fileName = uuid.v4() + ".jpg"
-
+                const {img} = req.files
+                img.mv(path.resolve(__dirname, '..', 'static', fileName))
                 // Upload an image
                 const uploadResult = await cloudinary.uploader
                 .upload(
