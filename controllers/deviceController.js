@@ -166,6 +166,20 @@ class DeviceController{
         )
         return res.json(device)
     }
+    
+    async setRating(req,res,next){
+        try{
+            let {id,rating} = req.params
+            const device = await Device.update(
+                    {rating},
+                    { where: {id} }
+                  )
+            return res.json(device)
+        } catch (e){
+            next(ApiError.badRequest(e.message))
+        }
+        
+    }
 }
 
 module.exports = new DeviceController()

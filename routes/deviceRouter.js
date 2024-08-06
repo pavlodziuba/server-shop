@@ -7,4 +7,5 @@ router.get('/',deviceController.getAll)
 router.get('/:id',deviceController.getOne)
 router.delete('/:id',deviceController.delete)
 router.put('/:id',deviceController.update)
+router.put('/:id/:rating',deviceController.setRating)
 module.exports = router
