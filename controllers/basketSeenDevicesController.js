@@ -35,7 +35,6 @@ class BasketSeenDeviceController{
                 )
             }
             const basket_seen_device = await BasketSeenDevice.create({basketId,deviceIdArr})
-            console.log('HERE!' + amount)
             return res.json( basket_seen_device)
         }
     }
